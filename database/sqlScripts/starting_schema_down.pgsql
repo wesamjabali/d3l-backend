@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS public."sessions" CASCADE;
+DROP TABLE IF EXISTS public."users" CASCADE;
