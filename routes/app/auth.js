@@ -12,16 +12,19 @@ const knex = require("../../database/knex");
 router.post("/login", async (req, res, next) => {
     try {
       // initialize body params
-      const {
-        username,
-        password,
+      console.log(req.body)
+      const attemptUser = {
+        email,
+        password
       } = req.body;
+
       // fetch user details
-      const [targetUser] = await knex("users")
+      const [targetUser] = await knex("d3l_user")
         .where({
-          username,
+          email: attemptUser.email
         })
         .select();
+
       // 404 condition
       if (typeof targetUser == "undefined") {
         res.status(404).json({});
@@ -29,9 +32,10 @@ router.post("/login", async (req, res, next) => {
       }
       // match passwords then proceed
         const passwordMatching = bcrypt.compareSync(
-          password,
+          attemptUser.password,
           targetUser.password
         );
+
         if (!passwordMatching) {
           res.status(422).json({});
           throw new Error("Validation Error - 422");
@@ -40,7 +44,7 @@ router.post("/login", async (req, res, next) => {
       const token = jwt.sign(
         {
           userID: targetUser.id,
-          username: targetUser.username,
+          email: targetUser.email,
           iat: Math.floor(Date.now() / 1000),
         },
         process.env.AUTH_CLIENT_SECRET,

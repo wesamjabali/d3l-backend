@@ -39,7 +39,7 @@ router.post("/addRole", async (req, res, next) => {
   })
 
 // add user
-router.post("/", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
     try {     
       const newUser =  {
         first_name,
@@ -47,11 +47,9 @@ router.post("/", async (req, res, next) => {
         email,
         password,
         phone,
-        address,
-        roles
+        address
       } = req.body;
     
-      
     
       let bcryptPass = bcrypt.hashSync(newUser.password, salt);
     

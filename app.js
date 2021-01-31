@@ -38,7 +38,7 @@ const startApp = async () => {
       // migrate latest seed
       await knex.migrate.latest();
       // if no seeds, seed the app
-          const result = await knex("users").select();
+          const result = await knex("d3l_user").select();
           const seedMessage = result.length ? `Already there.` : `Seeding.`;
           console.info("startApp -> seeds:", seedMessage);
           if (result.length === 0) {
