@@ -41,13 +41,11 @@ router.post("/login", async (req, res, next) => {
         {
           userID: targetUser.id,
           username: targetUser.username,
-          roles: targetUser.roles,
-          payRate: targetUser.payrate,
           iat: Math.floor(Date.now() / 1000),
         },
         process.env.AUTH_CLIENT_SECRET,
         {
-          expiresIn: "7d",
+          expiresIn: "1h",
         }
       );
       // response logic

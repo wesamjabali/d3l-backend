@@ -2,8 +2,8 @@ module.exports = (roles = []) => {
     return (req, res, next) => {
       // grab admin roles
       const userRoles = req.user.roles;
-      // if includes super, autopass
-      if (userRoles.includes("super")) {
+      // if includes admin, autopass
+      if (userRoles.includes("admin")) {
         return next();
       } else {
         // check if admin has any of the roles assigned

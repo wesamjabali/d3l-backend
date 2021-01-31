@@ -1,8 +1,8 @@
 // !production content seed
 const seedArray = [
   {
-    username: "wesam",
-    email: "wesamjabali@icloud.com",
+    username: "admin",
+    email: "admin@admin.com",
     password: "$2y$12$CiJb2Z.vjSHY9s2cXWrBb.R73kZS9Sr9UHu/rlxKHUilyr2KZZ.Wi",
     payrate: 20,
     roles: ["super"]
