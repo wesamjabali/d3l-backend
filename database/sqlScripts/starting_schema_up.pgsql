@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS public.d3l_user(
     id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
     first_name text,
     last_name text,
-    email text,
+    email text NOT NULL,
+    password text NOT NULL,
     phone text,
     address text
 );
@@ -92,4 +93,14 @@ CREATE TABLE IF NOT EXISTS public.d3l_user_course(
     CONSTRAINT fk_course
 		FOREIGN KEY(course_id) 
 			REFERENCES public.d3l_course(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.d3l_user_role(
+    created_at timestamptz NOT NULL default NOW(),
+    id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    user_id BIGINT,
+    role text NOT NULL,
+    CONSTRAINT fk_user
+		FOREIGN KEY(user_id) 
+			REFERENCES public.d3l_user(id)
 );
