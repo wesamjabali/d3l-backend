@@ -24,13 +24,14 @@ router.post("/addRole", async (req, res, next) => {
       email: userEmail
     }).select('id');
     
-    roles.forEach(r => {
+    for(const r of roles) {
       await knex("d3l_user_role")
       .insert({
         user_id: userID,
         role: r
       });  
-    });
+    }
+
 
   } catch (err) {
     next(err);

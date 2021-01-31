@@ -2,7 +2,6 @@
 const express = require("express");
 const knex = require("../../../database/knex");
 const router = express.Router();
-const getClockStatus = require("../../../utils/functions/getClockStatus.js");
 
 router.get("/getSessions", async (req, res, next) => {
   try {
