@@ -2,7 +2,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: "postgres://postgres:postgres@localhost:5432/tempdb",
+    connection: "postgres://postgres:postgres@localhost:5432/db_d3l",
     migrations: {
       directory: __dirname + "/database/migrations",
     },
