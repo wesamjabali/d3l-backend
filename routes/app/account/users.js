@@ -14,13 +14,39 @@ try {
 }
 })
 
+router.post("/addRole", async (req, res, next) => {
+  try {
+    const userEmail = req.body.email;
+    const roles = req.body.roles;
+
+    let userID = await knex("d3l_user")
+    .where({
+      email: userEmail
+    }).select('id');
+    
+    roles.forEach(r => {
+      await knex("d3l_user_role")
+      .insert({
+        user_id: userID,
+        role: r
+      });  
+    });
+
+  } catch (err) {
+    next(err);
+  }
+  })
+
 // add user
 router.post("/", async (req, res, next) => {
     try {     
       const newUser =  {
-        username,
+        first_name,
+        last_name,
+        email,
         password,
-        payrate,
+        phone,
+        address,
         roles
       } = req.body;
     
@@ -28,9 +54,9 @@ router.post("/", async (req, res, next) => {
     
       let bcryptPass = bcrypt.hashSync(newUser.password, salt);
     
-      let [existingUser] = await knex("users")
+      let [existingUser] = await knex("d3l_user")
         .where({
-          username: newUser.username
+          email: newUser.email
         }).select();
     
         if(typeof existingUser != "undefined") {
@@ -38,16 +64,16 @@ router.post("/", async (req, res, next) => {
           throw new Error("Localized - 404");
         }
     
-        console.log(existingUser);
-        await knex("users")
+        await knex("d3l_user")
           .insert({
-            username: newUser.username,
+            first_name: newUser.first_name,
+            last_name: newUser.lasst_name,            
             email: newUser.email,
             password: bcryptPass,
-            payrate: newUser.payrate,
-            roles: newUser.roles
-          });
-    
+            phone: newUser.phone,
+            address: newUser.address
+          }); 
+        
       res.status(201).json({});
     } catch (err) {
       next(err)
