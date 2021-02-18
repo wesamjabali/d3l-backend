@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS public.d3l_user(
     created_at timestamptz NOT NULL default NOW(),
     id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
     first_name text,
+    middle_name text,
     last_name text,
     email text NOT NULL,
     password text NOT NULL,
@@ -38,11 +39,24 @@ CREATE TABLE IF NOT EXISTS public.d3l_content(
     body text,
     file_url text,
     is_graded BOOLEAN,
+    CONSTRAINT fk_course
+        FOREIGN KEY(course_id)
+            REFERENCES public.d3l_course(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.d3l_user_content(
+    created_at timestamptz NOT NULL default NOW(),
+    id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    course_id BIGINT,
+    user_id BIGINT,
     points_earned numeric(6,3),
     points_total numeric(6,3),
     CONSTRAINT fk_course
         FOREIGN KEY(course_id)
-            REFERENCES public.d3l_course(id)
+            REFERENCES public.d3l_course(id),
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+            REFERENCES public.d3l_user(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.d3l_discussion_post(
