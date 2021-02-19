@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const knex = require("../../../database/knex");
 
+// Add role to user such as admin or faculty.
 router.post("/addRole", async (req, res, next) => {
   try {
     const userEmail = req.body.email;
@@ -24,13 +25,14 @@ router.post("/addRole", async (req, res, next) => {
   }
   })
 
-  router.get("/test", async (req, res, next) => {
-    try {
-        const message = "You have Admin role!"
-        res.status(200).json({ message })
-    } catch (err) {
-        next(err);
-    }
-    })
+// Get all users
+router.get("/getAllUsers", async (req, res, next) => {
+  try {
+    const users = await knex.select(['id', 'first_name', 'last_name']).from('d3l_user');
+    res.status(200).json({ users })
+  } catch (err) {
+    next(err);
+  }
+  })
 
     module.exports = router;
