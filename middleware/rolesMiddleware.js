@@ -18,8 +18,6 @@ module.exports = (roles = []) => {
           hasRole = true;
         }
       }
-      // if true proceed, otherwise reject
-      console.info("TCL: hasRole", hasRole);
       if (hasRole) {
         next();
       } else {
