@@ -19,11 +19,18 @@ router.post("/addRole", async (req, res, next) => {
         role: r
       });  
     }
-
-
   } catch (err) {
     next(err);
   }
   })
+
+  router.get("/test", async (req, res, next) => {
+    try {
+        const message = "You have Admin role!"
+        res.status(200).json({ message })
+    } catch (err) {
+        next(err);
+    }
+    })
 
     module.exports = router;
