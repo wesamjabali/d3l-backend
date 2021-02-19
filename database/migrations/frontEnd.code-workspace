@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\..\\..\\Frontend UI\\d2l-ui"
+		},
+		{
+			"name": "d2l-backend",
+			"path": "..\\.."
+		}
+	],
+	"settings": {}
+}
