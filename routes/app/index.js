@@ -6,7 +6,7 @@ const router = express.Router();
 const non_auth_routes = require("./non_auth");
 const admin_routes = require("./admin");
 const faculty_routes = require("./faculty");
-const auth_routes = require("./auth");
+const auth_routes = require("./auth/");
 
 // auth middleware
 const auth_middleware = require("../../middleware/authMiddleware");
