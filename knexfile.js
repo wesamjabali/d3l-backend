@@ -13,7 +13,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL.append('?sslmode=require'),
+    connection: String(process.env.DATABASE_URL).append('?sslmode=require'),
     migrations: {
       directory: __dirname + "/database/migrations",
     },
