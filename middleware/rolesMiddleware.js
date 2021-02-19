@@ -1,7 +1,17 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = (roles = []) => {
+  
     return (req, res, next) => {
       // grab admin roles
-      const userRoles = req.user.roles;
+      if(!req.headers.authorization) {
+        res.status(401).json({"401": "User not logged in."});
+        throw new Error("User not logged in.");
+      }
+      const token = req.headers.authorization.split(' ')[1];
+      const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
+      
+      const userRoles = user.roles;
       // if includes admin, autopass
       if (userRoles.includes("admin")) {
         return next();
@@ -21,7 +31,6 @@ module.exports = (roles = []) => {
         } else {
           // reject otherwise
           res.status(403).json({});
-          throw new Error("WARNING! - ADMIN AUTH ROLES ERROR! - 403");
         }
       }
     };

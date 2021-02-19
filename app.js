@@ -7,9 +7,8 @@ const app = express();
 // global middleware
 const cors = require("./middleware/cors")
 
-
-app.use(express.json({ limit: "40mb" }));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: "40mb" }));
 app.use(cors)
 
 // attach main router
