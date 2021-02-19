@@ -13,7 +13,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: String(process.env.DATABASE_URL) + "?sslmode=require",
+    connection: String(process.env.HEROKU_POSTGRESQL_COPPER_URL) + "?sslmode=require",
     migrations: {
       directory: __dirname + "/database/migrations",
     },
