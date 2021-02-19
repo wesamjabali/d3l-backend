@@ -41,10 +41,24 @@ router.post("/login", async (req, res, next) => {
           throw new Error("Validation Error - 422");
         }
       // create token for user
+
+      // Get roles that belong to user
+      const roles_object = await knex("d3l_user_role").where({
+        user_id: targetUser.id
+      }).select("role");
+
+      var roles_array = [];
+      roles_object.forEach(r => {
+        roles_array.push(r.role);
+      });
+
+      console.log(roles_array);
+
       const token = jwt.sign(
         {
           userID: targetUser.id,
           email: targetUser.email,
+          roles: roles_array,
           iat: Math.floor(Date.now() / 1000),
         },
         process.env.AUTH_CLIENT_SECRET,
