@@ -59,6 +59,8 @@ router.post("/login", async (req, res, next) => {
           userID: targetUser.id,
           email: targetUser.email,
           roles: roles_array,
+          first_name: targetUser.first_name,
+          last_name: targetUser.last_name,
           iat: Math.floor(Date.now() / 1000),
         },
         process.env.AUTH_CLIENT_SECRET,
