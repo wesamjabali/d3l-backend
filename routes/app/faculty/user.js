@@ -2,10 +2,17 @@ const express = require("express");
 const router = express.Router();
 const knex = require("../../../database/knex");
 
-// get all users
-router.get("/getAllUsers", async (req, res, next) => {
+// Add user to a course
+router.post("/addUserCourse", async (req, res, next) => {
     try {
-      const users = await knex.select().from('user');
+      const {user_id, course_id} = req.body;
+      let course = await knex.select().from('d3l_user_course');
+      if(course) {
+        res.status(201).json({"message": "Course already exists for this user."})
+        next();
+      }
+
+      await knex.insert({user_id: user_id, course_id: course_id}).into('d3l_user_course');
       res.status(200).json({ users })
     } catch (err) {
       next(err);
