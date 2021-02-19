@@ -16,12 +16,11 @@ module.exports = (roles = []) => {
       if (userRoles.includes("admin")) {
         return next();
       } else {
-        // check if admin has any of the roles assigned
+        // check if user has any of the roles assigned
         let hasRole = false;
         for (let role of roles) {
           if (userRoles.includes(role)) {
             hasRole = true;
-            break;
           }
         }
         // if true proceed, otherwise reject
