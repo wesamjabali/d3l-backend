@@ -1,7 +1,6 @@
 module.exports = {
-
   development: {
-    client: 'pg',
+    client: "pg",
     connection: "postgres://postgres:postgres@localhost:5432/db_d3l",
     migrations: {
       directory: __dirname + "/database/migrations",
@@ -12,7 +11,7 @@ module.exports = {
   },
 
   production: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL + "?sslmode=require",
     migrations: {
       directory: __dirname + "/database/migrations",
@@ -20,5 +19,5 @@ module.exports = {
     seeds: {
       directory: __dirname + "/database/seeds",
     },
-  }
+  },
 };
