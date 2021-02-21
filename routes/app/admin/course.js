@@ -31,4 +31,16 @@ router.post("/new", async (req, res, next) => {
   }
 });
 
+// Get all courses
+router.get("/getAllCourses", async (req, res, next) => {
+  try {
+    const courses = await knex
+      .select(["id", "title"])
+      .from("d3l_course");
+    res.status(200).json({ courses });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
