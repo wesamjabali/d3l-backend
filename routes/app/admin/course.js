@@ -14,6 +14,7 @@ router.post("/new", async (req, res, next) => {
         section_number: section_number
       })
       .select("id");
+      
     if (existing_course.length > 0) {
       res.status(409).json({});
       throw new Error("Course already exists.");
