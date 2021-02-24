@@ -32,6 +32,38 @@ router.post("/new", async (req, res, next) => {
   }
 });
 
+// Remove course
+router.post("/delete", async (req, res, next) => {
+  try {
+    const { course_id } = req.body;
+    
+    /*
+    // Ensure course exists before deleting
+    let existing_course = await knex("d3l_course")
+    .where({
+      id: course_id
+    }).select();
+
+    if (existing_course.length == 0) {
+      res.status(409).json({});
+      throw new Error("Cannot delete nonexistent course.");
+    }
+    */
+
+    // Update courses table via delete
+    await knex("d3l_course")
+      .where({
+        id: course_id
+      })
+      .del();
+
+    res.status(201).json({});
+
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Get all courses
 router.get("/getAllCourses", async (req, res, next) => {
   try {
