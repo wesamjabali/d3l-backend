@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.d3l_content(
     title text NOT NULL,
     body text,
     file_url text,
+    file_name text,
     is_graded BOOLEAN,
     CONSTRAINT fk_course
         FOREIGN KEY(course_id)

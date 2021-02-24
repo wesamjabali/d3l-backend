@@ -23,11 +23,10 @@ router.post("/new", async (req, res, next) => {
 
     // Update table
     await knex("d3l_team").insert({
-        team_name: team_name,
-        course_id: course_id,
+      team_name: team_name,
+      course_id: course_id,
     });
     res.status(201).json({});
-
   } catch (err) {
     next(err);
   }
@@ -36,28 +35,11 @@ router.post("/new", async (req, res, next) => {
 // Delete existing team
 router.post("/delete", async (req, res, next) => {
   try {
-    const { team_name, course_id } = req.body;
-
-    /*
-    // Ensure target team exists
-    let existing_team = await knex("d3l_team")
-      .where({
-        team_name: team_name,
-        course_id: course_id,
-      })
-      .select("id");
-
-    if (existing_team.length == 0) {
-      res.status(409).json({});
-      throw new Error("Specified team does not exist.");
-    }
-    */
-
+    const { team_id } = req.body;
     // Update table
     await knex("d3l_team")
       .where({
-        team_name: team_name,
-        course_id: course_id,
+        id: team_id,
       })
       .del();
 
@@ -90,7 +72,7 @@ router.post("/addUser", async (req, res, next) => {
       user_id: user_id,
       team_id: team_id,
     });
-    
+
     res.status(201).json({});
   } catch (err) {
     next(err);
@@ -101,22 +83,6 @@ router.post("/addUser", async (req, res, next) => {
 router.post("/deleteUser", async (req, res, next) => {
   try {
     const { user_id, team_id } = req.body;
-
-    /*
-    // Can't delete user if they're not part of target team
-    let existing_result = await knex("d3l_user_team")
-      .where({
-        user_id: user_id,
-        team_id: team_id,
-      })
-      .select();
-
-    if (existing_result.length == 0) {
-      res.status(409).json({});
-      return;
-    }
-    */
-
     // Update team table
     await knex("d3l_user_team")
       .where({
@@ -124,13 +90,11 @@ router.post("/deleteUser", async (req, res, next) => {
         team_id: team_id,
       })
       .del();
-    
+
     res.status(201).json({});
-    
   } catch (err) {
     next(err);
   }
 });
-
 
 module.exports = router;
