@@ -24,6 +24,44 @@ router.post("/addRole", async (req, res, next) => {
       });
     }
     res.status(201).json({});
+
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Remove a given role from a user
+router.post("/removeRole", async(req, res, next) => {
+  try {
+    const { user_id, roles } = req.body;
+
+    // For each role we want to remove:
+    for (const r of roles) {
+
+      /*
+      // Check if the user actually has that role
+      let existing_result = await knex("d3l_user_role").where({
+        user_id: user_id,
+        role: r
+      }.select());
+
+      if (existing_result.length == 0) {
+        res.status(409).json({});
+        throw new Error("User does not have one or more specified roles.");
+      }
+      */
+
+      // Update the roles pivot table via delete
+      await knex("d3l_user_role")
+        .where({
+          user_id: user_id,
+          role: r
+        })
+        .del();
+    }
+
+    res.status(201).json();
+
   } catch (err) {
     next(err);
   }
@@ -57,6 +95,40 @@ router.post("/addCourse", async (req, res, next) => {
   }
 });
 
+// Delete user
+router.post("/delete", async (req, res, next) => {
+  try {
+    const { user_id } = req.body;
+
+    /*
+    // Ensure target user exists
+    let existing_user = await knex("d3l_user")
+      .where({
+        id: user_id
+      })
+      .select();
+
+    if (existing_user.length == 0) {
+      res.status(409).json({});
+      throw new Error("Specified user does not exist.");
+    }
+    */
+
+    // If so, update user table via delete
+    await knex("d3l_user")
+      .where({
+        id: user_id
+      })
+      .del();
+
+    res.status(201).json({});
+
+  } catch(err) {
+    next(err);
+  }
+  
+});
+
 // Get all users
 router.get("/getAllUsers", async (req, res, next) => {
   try {
@@ -68,4 +140,6 @@ router.get("/getAllUsers", async (req, res, next) => {
     next(err);
   }
 });
+
+
 module.exports = router;
