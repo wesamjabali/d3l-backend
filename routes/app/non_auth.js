@@ -10,7 +10,6 @@ const knex = require("../../database/knex");
 router.post("/login", async (req, res, next) => {
   try {
     // initialize body params
-    console.log(req.body);
     const attemptUser = ({ email, password } = req.body);
 
     // fetch user details
@@ -51,7 +50,7 @@ router.post("/login", async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        userID: targetUser.id,
+        id: targetUser.id,
         email: targetUser.email,
         roles: roles_array,
         first_name: targetUser.first_name,

@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 // Get all relevant fields of a given course
 router.get("/getCourse", async (req, res, next) => {
-  const { course_id } = req.body;
+  const { course_id } = req.query;
 
   try {
     const results = await knex
@@ -14,13 +14,12 @@ router.get("/getCourse", async (req, res, next) => {
         "title",
         "course_number",
         "course_prefix",
-        "section_number"
+        "section_number",
       ])
       .from("d3l_course")
-      .where( {"id": course_id} );
+      .where({ id: course_id });
 
-      res.status(200).json( {results} );
-
+    res.status(200).json({ results });
   } catch (err) {
     next(err);
   }
@@ -32,10 +31,10 @@ router.get("/getAllCourses", async (req, res, next) => {
   const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
   try {
     const courses = await knex
-      .select("id")
+      .select("d3l_course.id", "title")
       .from("d3l_course")
       .join("d3l_user_course", "d3l_user_course.course_id", "d3l_course.id")
-      .where({ "d3l_user_course.user_id": user.userID });
+      .where({ "d3l_user_course.user_id": user.id });
     res.status(200).json({ courses });
   } catch (err) {
     next(err);
@@ -43,21 +42,19 @@ router.get("/getAllCourses", async (req, res, next) => {
 });
 
 // Get all users (user IDs) in the current course
-router.get("/getAllUsers", async(req, res, next) => {
-  const { course_id } = req.body;
-  
+router.get("/getAllUsers", async (req, res, next) => {
+  const { course_id } = req.query;
   try {
     const users = await knex
-      .select("user_id")
+      .select("d3l_user.id", "d3l_user.first_name", "d3l_user.last_name")
       .from("d3l_user_course")
-      .where( {"course_id": course_id} );
+      .leftJoin("d3l_user", "d3l_user.id", "d3l_user_course.user_id")
+      .where({ course_id: course_id });
 
-      res.status(200).json( {users} );
-
-  } catch(err) {
+    res.status(200).json({ users });
+  } catch (err) {
     next(err);
   }
-
 });
 
 module.exports = router;

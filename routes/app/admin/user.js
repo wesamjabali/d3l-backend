@@ -37,20 +37,6 @@ router.post("/removeRole", async(req, res, next) => {
 
     // For each role we want to remove:
     for (const r of roles) {
-
-      /*
-      // Check if the user actually has that role
-      let existing_result = await knex("d3l_user_role").where({
-        user_id: user_id,
-        role: r
-      }.select());
-
-      if (existing_result.length == 0) {
-        res.status(409).json({});
-        throw new Error("User does not have one or more specified roles.");
-      }
-      */
-
       // Update the roles pivot table via delete
       await knex("d3l_user_role")
         .where({
