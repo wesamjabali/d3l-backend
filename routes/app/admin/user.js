@@ -81,30 +81,41 @@ router.post("/addCourse", async (req, res, next) => {
   }
 });
 
-// Delete user
+// Delete user given a user ID
 router.post("/delete", async (req, res, next) => {
   try {
     const { user_id } = req.body;
 
-    /*
-    // Ensure target user exists
-    let existing_user = await knex("d3l_user")
-      .where({
-        id: user_id
-      })
-      .select();
-
-    if (existing_user.length == 0) {
-      res.status(409).json({});
-      throw new Error("Specified user does not exist.");
-    }
-    */
-
-    // If so, update user table via delete
+    // Delete user from users table ("d3l_user")
     await knex("d3l_user")
       .where({
         id: user_id
       })
+      .del();
+
+    // Delete from pivot table: "d3l_user_content"
+    await knex("d3l_user_content")
+    .where({ user_id: user.id })
+    .del();
+
+    // Delete from table: "d3l_discussion_post"
+    await knex("d3l_discussion_post")
+      .where({ user_id: user.id })
+      .del();
+
+    // Delete from pivot table: "d3l_user_team"
+    await knex("d3l_user_team")
+      .where({ user_id: user.id })
+      .del();
+
+    // Delete from pivot table: "d3l_user_course"
+    await knex("d3l_user_course")
+      .where({ user_id: user.id })
+      .del();
+
+    // Delete from pivot table: "d3l_user_role"
+    await knex("d3l_user_role")
+      .where({ user_id: user.id })
       .del();
 
     res.status(201).json({});
