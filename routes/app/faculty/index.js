@@ -12,7 +12,7 @@ router.use("/user", user_routes);
 router.use("/course", course_routes);
 router.use("/team", team_routes);
 router.use("/content", content_routes);
-router.user("/discussion", discussion_routes);
+router.use("/discussion", discussion_routes);
 
 // export router
 module.exports = router;
