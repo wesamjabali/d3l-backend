@@ -14,7 +14,7 @@ router.post("/deleteSelf", async (req, res, next) => {
         .del();
 
       // Delete from pivot table: "d3l_user_content"
-      await knex("d3l_user")
+      await knex("d3l_user_content")
         .where({ user_id: user.id })
         .del();
 
