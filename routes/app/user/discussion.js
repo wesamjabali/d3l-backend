@@ -88,4 +88,43 @@ router.get("/getAllByUser", async (req, res, next) => {
   }
 });
 
+// Create a new discussion post
+router.post("/new", async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
+    const { course_id, parent_id, content_id, title, body } = req.body;
+
+    await knex("d3l_discussion_post").insert({
+      user_id: user.id,
+      course_id: course_id,
+      parent_id: parent_id,
+      content_id: content_id,
+      title: title,
+      body: body
+    });
+
+    res.status(201).json({});
+
+  } catch(err) {
+    next(err);
+  }
+});
+
+// Delete a discussion post
+router.post("/delete", async(req, res, next) => {
+  try {
+    const { post_id } = req.body;
+
+    await knex("d3l_discussion_post")
+      .where({ id: post_id })
+      .del();
+
+    res.status(200).json({});
+    
+  } catch (err) {
+      next(err);
+  }
+});
+
 module.exports = router;
