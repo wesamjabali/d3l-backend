@@ -4,22 +4,16 @@ const knex = require("../../../database/knex");
 const jwt = require("jsonwebtoken");
 
 // Get all relevant fields of a given course
-router.get("/getCourse", async (req, res, next) => {
+router.get("/get", async (req, res, next) => {
   const { course_id } = req.query;
 
   try {
-    const results = await knex
-      .select([
-        "course_id",
-        "title",
-        "course_number",
-        "course_prefix",
-        "section_number",
-      ])
+    const [course] = await knex
+      .select(["title", "course_number", "course_prefix", "section_number"])
       .from("d3l_course")
       .where({ id: course_id });
 
-    res.status(200).json({ results });
+    res.status(200).json({ course });
   } catch (err) {
     next(err);
   }

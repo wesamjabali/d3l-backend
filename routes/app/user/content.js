@@ -24,11 +24,11 @@ router.get("/getAllForCourse", async (req, res, next) => {
   const { course_id } = req.query;
 
   try {
-    const contents = await knex
-      .select("id")
+    const content = await knex
+      .select("*")
       .from("d3l_content")
       .where({ course_id: course_id });
-    res.status(200).json({ contents });
+    res.status(200).json({ content });
   } catch (err) {
     next(err);
   }
