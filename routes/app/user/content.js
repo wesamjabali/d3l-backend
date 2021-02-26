@@ -44,7 +44,6 @@ router.get("/getFile", async (req, res, next) => {
       .from("d3l_content")
       .where({ id: content_id });
 
-    console.log(result.file_name);
     res.download(result.file_url, result.file_name);
 
     res.status(200);

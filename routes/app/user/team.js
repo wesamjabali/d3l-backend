@@ -22,7 +22,6 @@ router.get("/getTeam", async (req, res, next) => {
 // Get all teams (team IDs) in a given course
 router.get("/getAllForCourse", async (req, res, next) => {
   const { course_id } = req.query;
-  console.log(course_id);
   try {
     const teams = await knex
       .select("id", "team_name")
@@ -44,8 +43,6 @@ router.get("/getAllUsers", async (req, res, next) => {
       .select("user_id")
       .from("d3l_user_team")
       .where({ team_id: team_id });
-
-    console.log(ids);
 
     const users = ids;
     res.status(200).json({ users });
