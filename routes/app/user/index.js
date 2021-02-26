@@ -11,7 +11,7 @@ const user_routes = require("./user.js");
 router.use("/course", course_routes);
 router.use("/content", content_routes);
 router.use("/team", team_routes);
-router.use("./discussion", discussion_routes);
+router.use("/discussion", discussion_routes);
 router.use("/user", user_routes);
 
 // export router
