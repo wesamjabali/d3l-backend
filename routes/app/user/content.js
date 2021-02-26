@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 // Get all the relevant fields of a given piece of content (content ID)
 router.get("/getContent", async (req, res, next) => {
-  const { content_id } = req.body;
+  const { content_id } = req.query;
 
   try {
     const results = await knex
