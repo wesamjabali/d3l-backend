@@ -111,29 +111,33 @@ router.post("/new", async (req, res, next) => {
   }
 });
 
-// Delete a discussion post
+// Delete a discussion post (only your own)
 router.post("/delete", async(req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
     const { post_id } = req.body;
 
     await knex("d3l_discussion_post")
-      .where({ id: post_id })
+      .where({ id: post_id, user_id: user.id })
       .del();
 
     res.status(200).json({});
 
   } catch (err) {
-      next(err);
+    next(err);
   }
 });
 
-// Edit a discussion post
+// Edit a discussion post (only your own)
 router.post("/edit", async(req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
     const { post_id, title, body } = req.body;
 
     await knex("d3l_discussion_post")
-      .where({ id: post_id })
+      .where({ id: post_id, user_id: user.id })
       .update({
           title: title,
           body: body
