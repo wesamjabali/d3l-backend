@@ -40,12 +40,12 @@ router.get("/getFile", async (req, res, next) => {
 
   try {
     const [result] = await knex
-      .select("file_url")
+      .select("file_url", "file_name")
       .from("d3l_content")
       .where({ id: content_id });
 
-    console.log(result.file_url);
-    res.download(result.file_url);
+    console.log(result.file_name);
+    res.download(result.file_url, result.file_name);
 
     res.status(200);
   } catch (err) {
