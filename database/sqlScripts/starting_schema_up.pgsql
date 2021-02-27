@@ -50,15 +50,11 @@ CREATE TABLE IF NOT EXISTS public.d3l_user_content(
     created_at timestamptz NOT NULL default NOW(),
     id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
     content_id BIGINT,
-    course_id BIGINT,
     user_id BIGINT,
     points_earned numeric(6,3),
     CONSTRAINT fk_content
         FOREIGN KEY(content_id)
             REFERENCES public.d3l_content(id),
-    CONSTRAINT fk_course
-        FOREIGN KEY(course_id)
-            REFERENCES public.d3l_course(id),
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
             REFERENCES public.d3l_user(id)

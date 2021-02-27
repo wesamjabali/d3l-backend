@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const { route } = require("../user/content");
 const baseURL = "public/data/uploads/content/";
 
 var storage = multer.diskStorage({
@@ -22,7 +23,7 @@ var upload = multer({
 // New Content
 router.post("/new", upload.single("content_file"), async (req, res, next) => {
   try {
-    const { course_id, title, body, is_graded } = req.body;
+    const { course_id, title, body, is_graded, points_total } = req.body;
 
     const file = req.file;
     let oldPath = baseURL + file.originalname;
@@ -51,8 +52,25 @@ router.post("/new", upload.single("content_file"), async (req, res, next) => {
       file_url: newPath,
       file_name: file.originalname,
       is_graded: is_graded,
+      points_total: points_total,
     });
     return res.sendStatus(201);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/grade", async (req, res, next) => {
+  try {
+    const { content_id, user_id, points_earned } = req.body;
+    console.log(req.body);
+
+    await knex("d3l_user_content").insert({
+      content_id: content_id,
+      user_id: user_id,
+      points_earned: points_earned,
+    });
+    res.sendStatus(201);
   } catch (err) {
     next(err);
   }

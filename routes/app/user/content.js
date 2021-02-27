@@ -19,6 +19,36 @@ router.get("/getContent", async (req, res, next) => {
   }
 });
 
+// Get all the relevant fields of a given piece of content (content ID)
+router.get("/getOwn", async (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
+  const { content_id } = req.query;
+
+  try {
+    const [content] = await knex
+      .select([
+        "course_id",
+        "title",
+        "body",
+        "is_graded",
+        "points_total",
+        "file_name",
+        "d3l_user_content.points_earned",
+      ])
+      .from("d3l_content")
+      .join("d3l_user_content", "d3l_content.id", "d3l_user_content.content_id")
+      .where({
+        "d3l_user_content.id": content_id,
+        "d3l_user_content.user_id": user.id,
+      });
+
+    res.status(200).json({ content });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Get all content (content IDs) within a given course
 router.get("/getAllForCourse", async (req, res, next) => {
   const { course_id } = req.query;
