@@ -39,7 +39,7 @@ router.get("/getOwn", async (req, res, next) => {
       .from("d3l_content")
       .join("d3l_user_content", "d3l_content.id", "d3l_user_content.content_id")
       .where({
-        "d3l_user_content.id": content_id,
+        "d3l_user_content.content_id": content_id,
         "d3l_user_content.user_id": user.id,
       });
 
