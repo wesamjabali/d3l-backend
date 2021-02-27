@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.d3l_content(
     file_url text,
     file_name text,
     is_graded BOOLEAN,
+    points_total numeric(6,3),
     CONSTRAINT fk_course
         FOREIGN KEY(course_id)
             REFERENCES public.d3l_course(id)
@@ -52,7 +53,6 @@ CREATE TABLE IF NOT EXISTS public.d3l_user_content(
     course_id BIGINT,
     user_id BIGINT,
     points_earned numeric(6,3),
-    points_total numeric(6,3),
     CONSTRAINT fk_content
         FOREIGN KEY(content_id)
             REFERENCES public.d3l_content(id),
