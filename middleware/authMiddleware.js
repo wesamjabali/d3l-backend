@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
       throw new Error("User Auth Middleware - No Auth Provided - 401");
     }
   } catch (err) {
-    console.log("Auth Error -> ", err)
+    console.log("Auth Error -> ", err);
     // send 401 & propagate
     res.status(401).json({});
     next(err);
