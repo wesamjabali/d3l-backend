@@ -17,8 +17,7 @@ router.post("/new", async (req, res, next) => {
       .select("id");
 
     if (existing_team.length > 0) {
-      res.status(409).json({});
-      throw new Error("Team already exists.");
+      return res.status(409).json({});
     }
 
     // Update table
