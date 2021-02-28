@@ -59,7 +59,7 @@ router.post("/login", async (req, res, next) => {
       },
       process.env.AUTH_CLIENT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "10h",
       }
     );
     // response logic

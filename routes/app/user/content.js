@@ -8,12 +8,19 @@ router.get("/getContent", async (req, res, next) => {
   const { content_id } = req.query;
 
   try {
-    const results = await knex
-      .select(["course_id", "title", "body", "file_url", "is_graded"])
+    const [content] = await knex
+      .select([
+        "course_id",
+        "title",
+        "body",
+        "file_url",
+        "file_name",
+        "points_total",
+      ])
       .from("d3l_content")
       .where({ id: content_id });
 
-    res.status(200).json({ results });
+    res.status(200).json({ content });
   } catch (err) {
     next(err);
   }
@@ -24,14 +31,14 @@ router.get("/getOwn", async (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
   const { content_id } = req.query;
+  console.log(req.query);
 
   try {
     const [content] = await knex
       .select([
-        "course_id",
+        "d3l_user_content.course_id",
         "title",
         "body",
-        "is_graded",
         "points_total",
         "file_name",
         "d3l_user_content.points_earned",
@@ -49,16 +56,61 @@ router.get("/getOwn", async (req, res, next) => {
   }
 });
 
-// Get all content (content IDs) within a given course
+// Get all content (content IDs) within a given course (with grades)
 router.get("/getAllForCourse", async (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
   const { course_id } = req.query;
-
   try {
     const content = await knex
-      .select("*")
+      .select([
+        "id",
+        "course_id",
+        "title",
+        "body",
+        "file_name",
+        "points_total",
+      ])
       .from("d3l_content")
       .where({ course_id: course_id });
+    console.log(content);
+
+    const grades = await knex
+      .select(["content_id", "points_earned"])
+      .from("d3l_user_content")
+      .where({
+        course_id: course_id,
+        user_id: user.id,
+      });
+    content.forEach((c) => {
+      const grade = grades.find((g) => g.content_id === c.id);
+      if (grade) {
+        c.points_earned = grade.points_earned;
+      } else {
+        c.points_earned = -1;
+      }
+    });
     res.status(200).json({ content });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Get all content grades within a given course
+router.get("/getAllGradesForCourse", async (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
+  const { course_id } = req.query;
+  try {
+    const grades = await knex
+      .select(["d3l_content.id", "d3l_user_content.points_earned"])
+      .from("d3l_content")
+      .join("d3l_user_content", "d3l_content.id", "d3l_user_content.content_id")
+      .where({
+        "d3l_content.course_id": course_id,
+        "d3l_user_content.user_id": user.id,
+      });
+    res.status(200).json({ grades });
   } catch (err) {
     next(err);
   }
@@ -95,42 +147,6 @@ router.get("/getFileName", async (req, res, next) => {
     res.json({ name: result.file_name });
 
     res.status(200);
-  } catch (err) {
-    next(err);
-  }
-});
-
-// Get own content (content IDs) within a given course
-router.get("/getOwnForCourse", async (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
-  const { course_id } = req.query;
-
-  try {
-    // Get all content for the given course as "t_course_content"
-    const subquery1 = await knex
-      .select("id")
-      .from("d3l_content")
-      .where({ course_id: course_id })
-      .as("t_course_content");
-
-    // From among the content in the given course, get grade data for current user
-    // (i.e. located in pivot table, not content table)
-    const subquery2 = await knex
-      .select(
-        "t_course_content.id",
-        "d3l_user_content.points_earned",
-        "d3l_user_content.points_total"
-      )
-      .from(subquery1)
-      .join(
-        "d3l_user_content",
-        "d3l_user_content.content_id",
-        "t_course_content.id"
-      )
-      .where({ "d3l_user_content.user_id": user.id });
-
-    res.status(200).json({ subquery2 });
   } catch (err) {
     next(err);
   }

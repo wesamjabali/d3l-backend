@@ -23,7 +23,7 @@ var upload = multer({
 // New Content
 router.post("/new", upload.single("content_file"), async (req, res, next) => {
   try {
-    const { course_id, title, body, is_graded, points_total } = req.body;
+    const { course_id, title, body, points_total } = req.body;
 
     const file = req.file;
     let oldPath = baseURL + file.originalname;
@@ -36,7 +36,7 @@ router.post("/new", upload.single("content_file"), async (req, res, next) => {
         return res.sendStatus(409);
       }
     });
-
+    // TODO: Check why this code runs no matter what I do
     // Create the folder if it doesn't exist
     // Not recommended to hit this point as the move op can be unreliable afterwards.
     fs.mkdir(courseDir, () => {});
@@ -51,7 +51,6 @@ router.post("/new", upload.single("content_file"), async (req, res, next) => {
       body: body,
       file_url: newPath,
       file_name: file.originalname,
-      is_graded: is_graded,
       points_total: points_total,
     });
     return res.sendStatus(201);
@@ -60,13 +59,14 @@ router.post("/new", upload.single("content_file"), async (req, res, next) => {
   }
 });
 
+// Grade a content
 router.post("/grade", async (req, res, next) => {
   try {
-    const { content_id, user_id, points_earned } = req.body;
-    console.log(req.body);
+    const { content_id, user_id, points_earned, course_id } = req.body;
 
     await knex("d3l_user_content").insert({
       content_id: content_id,
+      course_id: course_id,
       user_id: user_id,
       points_earned: points_earned,
     });
