@@ -63,7 +63,6 @@ router.post("/new", upload.single("content_file"), async (req, res, next) => {
 router.post("/grade", async (req, res, next) => {
   try {
     const { content_id, user_id, points_earned, course_id } = req.body;
-
     await knex("d3l_user_content").insert({
       content_id: content_id,
       course_id: course_id,

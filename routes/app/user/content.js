@@ -35,20 +35,22 @@ router.get("/getOwn", async (req, res, next) => {
 
   try {
     const [content] = await knex
-      .select([
-        "d3l_user_content.course_id",
-        "title",
-        "body",
-        "points_total",
-        "file_name",
-        "d3l_user_content.points_earned",
-      ])
+      .select(["id", "course_id", "title", "body", "file_name", "points_total"])
       .from("d3l_content")
-      .join("d3l_user_content", "d3l_content.id", "d3l_user_content.content_id")
+      .where({ id: content_id });
+
+    const [grade] = await knex
+      .select(["content_id", "points_earned"])
+      .from("d3l_user_content")
       .where({
-        "d3l_user_content.content_id": content_id,
-        "d3l_user_content.user_id": user.id,
+        content_id: content_id,
+        user_id: user.id,
       });
+    if (grade) {
+      content.points_earned = grade.points_earned;
+    } else {
+      content.points_earned = -1;
+    }
 
     res.status(200).json({ content });
   } catch (err) {
@@ -63,14 +65,7 @@ router.get("/getAllForCourse", async (req, res, next) => {
   const { course_id } = req.query;
   try {
     const content = await knex
-      .select([
-        "id",
-        "course_id",
-        "title",
-        "body",
-        "file_name",
-        "points_total",
-      ])
+      .select(["id", "course_id", "title", "body", "file_name", "points_total"])
       .from("d3l_content")
       .where({ course_id: course_id });
     console.log(content);
