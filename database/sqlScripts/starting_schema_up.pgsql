@@ -69,22 +69,17 @@ CREATE TABLE IF NOT EXISTS public.d3l_discussion_post(
     user_id BIGINT,
     course_id BIGINT,
     parent_id BIGINT,
-    content_id BIGINT,
     title text NOT NULL,
     body text,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
             REFERENCES public.d3l_user(id),
-    CONSTRAINT fk_content
-        FOREIGN KEY(content_id)
-            REFERENCES public.d3l_content(id),
     CONSTRAINT fk_course
         FOREIGN KEY(course_id)
             REFERENCES public.d3l_course(id),
     CONSTRAINT fk_parent
         FOREIGN KEY(parent_id)
-            REFERENCES public.d3l_discussion_post(id),
-    CHECK (user_id IS NOT NULL OR course_id IS NOT NULL OR parent_id IS NOT NULL OR content_id IS NOT NULL)
+            REFERENCES public.d3l_discussion_post(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.d3l_user_team(
