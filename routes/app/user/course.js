@@ -68,7 +68,7 @@ router.get("/getAllUsers", async (req, res, next) => {
   const { course_id } = req.query;
   try {
     const users = await knex
-      .select("d3l_user.id", "d3l_user.first_name", "d3l_user.last_name")
+      .select("d3l_user.id", "d3l_user.first_name", "d3l_user.last_name", "d3l_user.email", "d3l_user.phone")
       .from("d3l_user_course")
       .leftJoin("d3l_user", "d3l_user.id", "d3l_user_course.user_id")
       .where({ course_id: course_id });

@@ -31,7 +31,6 @@ router.get("/getOwn", async (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const user = jwt.verify(token, process.env.AUTH_CLIENT_SECRET);
   const { content_id } = req.query;
-  console.log(req.query);
 
   try {
     const [content] = await knex
@@ -68,7 +67,6 @@ router.get("/getAllForCourse", async (req, res, next) => {
       .select(["id", "course_id", "title", "body", "file_name", "points_total"])
       .from("d3l_content")
       .where({ course_id: course_id });
-    console.log(content);
 
     const grades = await knex
       .select(["content_id", "points_earned"])

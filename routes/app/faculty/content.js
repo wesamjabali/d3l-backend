@@ -75,6 +75,35 @@ router.post("/grade", async (req, res, next) => {
   }
 });
 
+// Get all the relevant fields of a given piece of content (content ID)
+router.get("/get", async (req, res, next) => {
+  const { content_id, user_id } = req.query;
+
+  try {
+    const [content] = await knex
+      .select(["id", "course_id", "title", "body", "file_name", "points_total"])
+      .from("d3l_content")
+      .where({ id: content_id });
+
+    const [grade] = await knex
+      .select(["content_id", "points_earned"])
+      .from("d3l_user_content")
+      .where({
+        content_id: content_id,
+        user_id: user_id,
+      });
+    if (grade) {
+      content.points_earned = grade.points_earned;
+    } else {
+      content.points_earned = -1;
+    }
+
+    res.status(200).json({ content });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Delete content
 router.post("/delete", async (req, res, next) => {
   try {
