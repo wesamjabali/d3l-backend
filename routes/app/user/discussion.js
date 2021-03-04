@@ -30,16 +30,12 @@ router.get("/getDiscussionPost", async (req, res, next) => {
 router.get("/getAllByCourse", async (req, res, next) => {
   const { course_id } = req.query;
 
-  try {
-    const posts = await knex
-      .select("*")
-      .from("d3l_discussion_post")
-      .where({ course_id: course_id, parent_id: null });
+  const posts = await knex
+    .select("id", "title", "body", "course_id", "user_id")
+    .from("d3l_discussion_post")
+    .where({ course_id: course_id, parent_id: null });
 
-    res.status(200).json({ posts });
-  } catch (err) {
-    next(err);
-  }
+  res.status(200).json({ posts });
 });
 
 // Get all discussion posts within replying to parent_id
@@ -62,7 +58,7 @@ router.get("/getChildren", async (req, res, next) => {
   const { parent_id } = req.query;
   try {
     const query = await knex.raw(
-      `WITH RECURSIVE children(id, parent_id, title, body, course_id, user_id, depth) AS (
+      `WITH RECURSIVE parents(id, parent_id, title, body, course_id, user_id, depth) AS (
       SELECT
         id,
         parent_id,
@@ -75,23 +71,20 @@ router.get("/getChildren", async (req, res, next) => {
         d3l_discussion_post
       WHERE
         id = ?
-      UNION
-        SELECT
-          e.id,
-          e.parent_id,
-          e.title,
-          e.body,
-          e.course_id,
-          e.user_id,
-          depth + 1
-        FROM
-        d3l_discussion_post e
-        INNER JOIN children s ON s.id = e.parent_id
-    ) SELECT
-      *
-    FROM
-    children
-    ORDER BY children.id ASC
+      UNION ALL
+      SELECT
+        d3l_discussion_post.id,
+        d3l_discussion_post.parent_id,
+        d3l_discussion_post.title,
+        d3l_discussion_post.body,
+        d3l_discussion_post.course_id,
+        d3l_discussion_post.user_id,
+        depth + 1
+      FROM d3l_discussion_post
+      JOIN parents ON parents.id = d3l_discussion_post.parent_id
+      ) 
+      SELECT * FROM parents
+      ORDER BY parents.id, parents.depth
     `,
       parent_id
     );
